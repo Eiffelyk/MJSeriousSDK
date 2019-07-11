@@ -3,6 +3,13 @@
 
 本SDK使用时需要获取正式授权的license文件。商务合作请联系[明觉科技](http://www.dataenlighten.com)，SDK仅提供合作客户使用，违用必究!
 
+### [点击下载 Demo.apk](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/demo.apk)
+### 功能截屏
+    ![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/demo_%E9%A1%B5%E9%9D%A2.jpg)
+    ![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/%E5%8A%9F%E8%83%BD_%E5%9C%88%E9%80%89.jpg)
+    ![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/%E5%8A%9F%E8%83%BD_%E9%80%89%E6%8B%A9%E9%85%8D%E4%BB%B6.jpg)
+    ![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/1.png)
+    
 ### 更新记录
 |时间|版本|更新内容|
 |----|-----|-----|
