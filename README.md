@@ -5,10 +5,9 @@
 
 ### [点击下载 Demo.apk](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/demo.apk)
 ### 功能截屏
-    ![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/demo_%E9%A1%B5%E9%9D%A2.jpg)
-    ![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/%E5%8A%9F%E8%83%BD_%E5%9C%88%E9%80%89.jpg)
-    ![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/%E5%8A%9F%E8%83%BD_%E9%80%89%E6%8B%A9%E9%85%8D%E4%BB%B6.jpg)
-    ![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/1.png)
+![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/demo_%E9%A1%B5%E9%9D%A2.jpg)
+![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/%E5%8A%9F%E8%83%BD_%E5%9C%88%E9%80%89.jpg)
+![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/%E5%8A%9F%E8%83%BD_%E9%80%89%E6%8B%A9%E9%85%8D%E4%BB%B6.jpg)
     
 ### 更新记录
 |时间|版本|更新内容|
