@@ -29,7 +29,7 @@ allprojects {
  在项目module build.gradle配置脚本中dependencies添加
 ```java
     //SDK依赖
-    implementation 'com.dataenlighten.serious:mj_serious_ui:0.0.4'
+    implementation 'com.dataenlighten.serious:mj_serious_ui:0.5.0'
     
 ```
 
