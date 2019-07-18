@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/authentic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="click"
@@ -22,6 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:enabled="false"
             android:onClick="vinQuery"
             android:text="定型" />
 
@@ -43,9 +45,11 @@
         tools:layout_editor_absoluteX="0dp" />
 
     <Button
+        android:id="@+id/damage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:enabled="false"
         android:onClick="startDamage"
         android:text="开始车辆定损" />
 

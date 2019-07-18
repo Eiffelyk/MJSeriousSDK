@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView showText;
     private EditText vin;
     private TextView showOrder;
+    private Button authentic;
+    private Button button;
+    private Button damage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
         showText = findViewById(R.id.show);
         vin = findViewById(R.id.vin);
         showOrder = findViewById(R.id.show_order);
+        authentic = findViewById(R.id.authentic);
+        button = findViewById(R.id.button);
+        damage = findViewById(R.id.damage);
     }
 
     public void click(View view) {
@@ -50,15 +57,21 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess() {
                     Toast.makeText(MainActivity.this, "认证成功", Toast.LENGTH_SHORT).show();
+                    button.setEnabled(true);
+                    damage.setEnabled(false);
                 }
 
                 @Override
                 public void onFail(String code, Exception e) {
+                    button.setEnabled(false);
+                    damage.setEnabled(false);
                     Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (LicenseNotFoundException e) {
             e.printStackTrace();
+            button.setEnabled(false);
+            damage.setEnabled(false);
             Toast.makeText(this, "请检查授权文件", Toast.LENGTH_SHORT).show();
         }
     }
@@ -72,11 +85,13 @@ public class MainActivity extends AppCompatActivity {
             public void onFail(String code, Exception e) {
                 Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 showText.setText(e.getMessage());
+                damage.setEnabled(false);
             }
 
             @Override
             public void onSuccess(List<MJVehicleObj> resultList) {
                 if (resultList != null && resultList.size() > 0) {
+                    damage.setEnabled(true);
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append("定型结果：").append(resultList.size()).append("辆\n");
                     for (MJVehicleObj mjVehicleObj : resultList) {
@@ -85,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                     showText.setText(stringBuilder.toString());
                     initCarInfo(resultList.get(0));
                 } else {
+                    damage.setEnabled(false);
                     Toast.makeText(MainActivity.this, "未锁定车型", Toast.LENGTH_SHORT).show();
                     showText.setText("未锁定车型");
                 }
