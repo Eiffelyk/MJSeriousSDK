@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:layout_toStartOf="@+id/button"
-            android:text="LFV5A24G1G3000628" />
+            android:text="LSVXL25N0D2110575" />
     </RelativeLayout>
 
 
@@ -52,7 +52,14 @@
         android:enabled="false"
         android:onClick="startDamage"
         android:text="开始车辆定损" />
-
+    <TextView
+        android:id="@+id/show_partKey"
+        android:textColor="#F00"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="已选关键配件"
+        tools:layout_editor_absoluteX="0dp" />
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">

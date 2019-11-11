@@ -154,8 +154,8 @@
 #-ignorewarning
 
 #base
--keep class com.dataenlighten.mj_serious_base.view.DrawManager { *; }
--keep class com.dataenlighten.mj_serious_base.view.DrawPartView { *; }
+-keep class com.dataenlighten.mj_serious_base.view.circledraw.DrawManager { *; }
+-keep class com.dataenlighten.mj_serious_base.view.circledraw.DrawPartView { *; }
 -keep class com.dataenlighten.mj_serious_base.view.OnDrawQueryListener { *; }
 -keep class com.dataenlighten.mj_serious_base.common.bean.** {*;}
 -keep class com.dataenlighten.mj_serious_base.exception.** { *; }

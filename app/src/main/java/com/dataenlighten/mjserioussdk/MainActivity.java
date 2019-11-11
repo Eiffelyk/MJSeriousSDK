@@ -11,15 +11,13 @@ import android.widget.Toast;
 
 import com.dataenlighten.mj_serious_base.callback.AbstractQueryListBeanCallback;
 import com.dataenlighten.mj_serious_base.callback.AbstractSDKInitCallback;
-import com.dataenlighten.mj_serious_base.common.bean.MJLaborObj;
-import com.dataenlighten.mj_serious_base.common.bean.MJPartObj;
 import com.dataenlighten.mj_serious_base.common.bean.MJVehicleObj;
-import com.dataenlighten.mj_serious_base.common.bean.PreviewOrderObj;
+import com.dataenlighten.mj_serious_base.common.bean.Part;
+import com.dataenlighten.mj_serious_base.common.bean.QuoteInfo;
 import com.dataenlighten.mj_serious_base.exception.LicenseNotFoundException;
 import com.dataenlighten.mj_serious_ui.service.MJSDKUIService;
 import com.dataenlighten.mj_serious_ui.service.OnSdkUIDamageListener;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView showText;
     private EditText vin;
     private TextView showOrder;
+    private TextView show_partKey;
     private Button authentic;
     private Button button;
     private Button damage;
@@ -38,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         showText = findViewById(R.id.show);
         vin = findViewById(R.id.vin);
+        show_partKey = findViewById(R.id.show_partKey);
         showOrder = findViewById(R.id.show_order);
         authentic = findViewById(R.id.authentic);
         button = findViewById(R.id.button);
@@ -122,36 +122,31 @@ public class MainActivity extends AppCompatActivity {
     public void startDamage(View view) {
         MJSDKUIService.getInstance().startDamage(MainActivity.this, new OnSdkUIDamageListener() {
             @Override
-            public void onDamageSuccess(PreviewOrderObj previewOrderObj) {
-                double totalPrice = 0.00;
-                StringBuilder stringBuilder = new StringBuilder();
-                ArrayList<MJPartObj> partObjs = previewOrderObj.getPartList();
-                if (partObjs != null && partObjs.size() > 0) {
-                    double totalPriceByPart = 0.00;
-                    for (int i = 0; i < partObjs.size(); i++) {
-                        totalPriceByPart += Double.parseDouble(partObjs.get(i).getPartPrice());
-                    }
-                    totalPrice += totalPriceByPart;
-                    stringBuilder.append("配件金额：").append(new DecimalFormat("0.00").format(totalPriceByPart)).append("元\n");
-                }
-                ArrayList<MJLaborObj> mjLaborObjs = previewOrderObj.getLaborList();
-                if (mjLaborObjs != null && mjLaborObjs.size() > 0) {
-                    double totalPriceByLabor = 0.00;
-                    for (int i = 0; i < mjLaborObjs.size(); i++) {
-                        totalPriceByLabor += Double.parseDouble(mjLaborObjs.get(i).getLaborCost());
-                    }
-                    totalPrice += totalPriceByLabor;
-                    stringBuilder.append("工时金额：").append(new DecimalFormat("0.00").format(totalPriceByLabor)).append("元\n");
-                }
-                stringBuilder.append("定损评估：").append(new DecimalFormat("0.00").format(totalPrice)).append("元\n");
-                stringBuilder.append("定损明细：").append(previewOrderObj.toString());
-                showOrder.setText(stringBuilder.toString());
+            public void onDamageSuccess(QuoteInfo quoteInfo) {
+                String stringBuilder = "损失详情：" +
+                        quoteInfo.toString();
+                showOrder.setText(stringBuilder);
+//                Intent intent = new Intent();
+//                intent.setAction("getSalvageOfferPrice");
+//                intent.putExtra("quoteInfo", quoteInfo);
+//                startActivity(intent);
             }
 
             @Override
             public void onDamageFailure(Exception e) {
                 Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 showOrder.setText(e.getMessage());
+            }
+
+            @Override
+            public void onSelectedKeyParts(ArrayList<Part> partArrayList) {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("选择核心配件：");
+                for (Part part : partArrayList) {
+                    stringBuilder.append(part.getStdPartName()).append(",");
+                }
+                show_partKey.setText(stringBuilder.toString());
+                Toast.makeText(MainActivity.this, "回传核心配件数量==" + partArrayList.size(), Toast.LENGTH_SHORT).show();
             }
         });
     }
