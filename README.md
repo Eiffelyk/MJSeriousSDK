@@ -2,17 +2,14 @@
 本SDK开发旨在提供方便快捷地对大案损失进行金额和配件的确认，通过VIN码进行车辆定型后即可使用圈选。
 
 本SDK使用时需要获取正式授权的license文件。商务合作请联系[明觉科技](http://www.dataenlighten.com)，SDK仅提供合作客户使用，违用必究!
-
-### [点击下载 Demo.apk](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/demo.apk)
-
     
 ### 更新记录
 |时间|版本|更新内容|
 |----|-----|-----|
-||||
+|2019年11月11日|0.6.4|1.定损定损结果改为回调得方式，<br>2.添加定损流程中将用户已选配件回传给APP|
 
 ## **使用步骤：**
-### 0.拷贝申请到的license.lic（此文件请勿重命名）文件到assets目录中
+### 0.拷贝申请到的mj_license.lic文件到assets目录中
 ### 1.添加依赖及权限：
 在工程build.gradle配置脚本中buildscript和allprojects段中添加【明觉科技SDK】 新maven仓库地址
 ```java
@@ -29,7 +26,7 @@ allprojects {
  在项目module build.gradle配置脚本中dependencies添加
 ```java
     //SDK依赖
-    implementation 'com.dataenlighten.serious:mj_serious_ui:0.5.0'
+    implementation 'com.dataenlighten.serious:mj_serious_ui:0.6.4'
     
 ```
 
@@ -92,13 +89,13 @@ allprojects {
 
 ## **功能集成：**
 
-###  1.初始化SDK
+###  1.初始化SDK(必须)
 ```java
     /**
      * 服务初始化（非主线程）
      *
      * @param ctx               依赖
-     * @param userIdentifier    用户唯一标识
+     * @param userIdentifier    用户唯一标识(调用方系统中用户唯一标识)
      * @param onSdkInitListener 初始化回调（AbstractSDKInitCallback可切换第三线程和主线程的回调）
      * @throws LicenseNotFoundException 未发现license异常
      */
@@ -123,11 +120,11 @@ try {
             Toast.makeText(this, "请检查授权文件", Toast.LENGTH_SHORT).show();
         }
 ````
-###   2.VIN定型
+###   2.VIN定型（定损前调用，确认车辆信息）
 ```java
     /**
      * VIN解析，返回对应VIN码的车辆信息
-     *
+     * 当onSuccess回调List<MJVehicleObj>不唯一的时候需要用户根据optionInfo描述手动选择不同的optionCode
      * @param sessionCode   案件唯一标识，为空或者null的时候，SDK内部生成
      * @param vin           VIN码
      * @param queryCallBack 请求回调。
@@ -147,7 +144,7 @@ MJSDKUIService.getInstance().VINQuery("sessionCode", "LFV5A24G1G3000628", new Ab
             }
         });
 ````
-### 3.初始化案件信息
+### 3.初始化案件信息（调用VINQuery成功后设置车辆信息，在开始定损前调用）
 ```java
     /**
      * 初始化赔案信息
@@ -184,12 +181,16 @@ MJSDKUIService.getInstance().startDamage(MainActivity.this, new OnSdkUIDamageLis
             public void onDamageFailure(Exception e) {
                 Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
+              @Override
+            public void onSelectedKeyParts(ArrayList<Part> partArrayList) {
+                Toast.makeText(MainActivity.this, "回传核心配件数量=="+partArrayList.size(), Toast.LENGTH_SHORT).show();
+            }
         });
 ````
 
 
 ### 5.涉及字段说明
-#####    MJVehicleObj.java
+#####    MJVehicleObj（车辆信息）
 | 字段名              | 类型    | 说明                                                                      |
 | ------------------- | ------ |------------------------------------------------------------------------- |
 | mjVehicleSys | String  | 车型（例如：雅阁）                                                       |
@@ -215,24 +216,76 @@ MJSDKUIService.getInstance().startDamage(MainActivity.this, new OnSdkUIDamageLis
 | minPrice | String  | 最低价格                           |
 | maxPrice       | String   | 最高价格|
 
-##### MJPartObj.java
-| 字段名              | 类型    | 说明                                                                      |
-| ------------------- | ------ |------------------------------------------------------------------------- |
-| thumbnailURl | String  | 缩略图URL                                                      |
-| stdPartName       | String   | 标准名|
-| srcPartName       | String | 原厂名 |
-| partNumber           | String | OE号                                                  |
-| partPrice        | String     | 4s店价格                                                   |
-| collisionCodes| List     | 该配件所属碰撞区域编码 “T00100”                                      |
+#####    QuoteInfo（损失详情）
+| 字段名              | 类型   | 说明                                                                      |
+| ------------------- | ------ |------------- |
+| collisionCodeList   | list\<string\> | 碰撞信息编码    |
+| partList            | list\<Part\>   | 核心配件清单    |
+| quotePartInfos       |  list\<PartInfo\>| 配件更换列表数据  |
+| quoteLaborInfos       | list\<OperationInfo\>| 工时项目列表数据 |
+| ecmPartList            | list\<Part\>   | 博车网核心配件清单    |
 
-##### MJLaborObj
-| 字段名              | 类型    | 说明                                                                      |
-| ------------------- | ------ |------------------------------------------------------------------------- |
-| laborName       | String   |工时名称-例如  前保险杠皮|
-| operation       | String |与中台交互的实际工项（例如: replace、panel、fit、accessoryFit、paint, material、externalRepair、electrical）【更换、钣金/维修、拆装、附件拆装、喷漆、辅料、外修、机电】 |
-| laborHour           | String | 工时数量                                                  |
-| laborCost        | String     | 工时价格                                                   |
+##### CollisionInfo(碰撞信息)
 
+| 字段名              | 类型    | 说明                 |
+| ------------------- | ------ |------------- |
+| collisionCode | String  | 明觉碰撞类型编码                                               |
+| description       | String   | 明觉碰撞类型名称描述|
+
+##### Part（核心配件配件）
+
+| 字段名              | 类型    | 说明                                                                      |
+| ------------------- | ------ |------------- |
+| partCode | String  | 配件名称编号                                                      |
+| stdPartName       | String   | 明觉标准名|
+| partNumber       | String | 原厂名 |
+| operation           | String | 工项 |
+| operationId        | String     | 工项id                                               |
+
+### quotePartInfos
+
+| 字段名              | 类型   | 说明                                                                      |
+| ------------------- | ------ |------------- |
+| partNumber| String| 配件OE号                                                       |
+| stdPartName       | String| 配件标准名称  |
+| partCode| String  | 配件CODE                                                       |
+| partPrice       | String | 配件金额 |
+| partCount      | int | 配件数量 |
+| parent      | List<String>| 总成 |
+| child      | List<String> | 局部 |
+| partFrom| String| 配件来源(partRecommend-圈选和二次推荐，queryPartByImg-图查配件，voice-语音，word-文字，initial-首字母，custom-自定义,,recommend-推荐) |
+| partType| String| 配件类型（little：小件、normal：标准件）                                                             |
+| sysPartPrice| String| 系统配件价格                                                     |
+| partMaterial| String|  配件材质                                                            |
+| partAttribute| String| 配件属性                                                    |
+| partQuality| String| 配件品质                                                           |
+| supplierPrice| String| 直供价格                                                     |
+| repairShopPrice| String|  修理厂报价                                                             |
+| recommendSupplier| String| 推荐供应商                                                     |
+| orderFlag| Boolean| 是否订购                                                           |
+| recoveryType| String| 回收类型（single，batch，no）                                                    |
+| residualValue| String| 残值                                                          |
+| selfPaymentPct| String| 自付比例                                                  |
+| transportationExpenses| String| 运费                                                 |
+
+
+### quoteLaborInfos
+
+| 字段名              | 类型   | 说明                                                                      |
+| ------------------- | ------ | ------------ |
+| stdPartName       | String| 配件标准名称  |
+| partCode| String  | 配件CODE                                                       |
+| operation       | String | 与中台交互的实际工项（例如: replace、panel、fit、accessoryFit、paint, material、externalRepair、electrical）【更换、钣金/维修、拆装、附件拆装、喷漆、辅料、外修、机电】 |
+| laborCost      | String| 工项价格 |
+| sysLaborCost       | String   | 系统工时金额|
+| laborHour      | String| 工时数量 |
+| severity      | String| 维修程度 light.轻 middle.中 serious.重|
+| condition      | String| 喷漆类型（new新件/repair维修） |
+| material     | String| 维修专用，材质：plastic塑料，iron铁质，aluminum铝质 |
+| selectedFrom      | String| 工项来源（ custom-自定义，default-默认，recommend-推荐） |
+| operationId| String| 工项代码 |
+| count| Integer| 工项数量 |
+| partNumber| String| OE |
 
 ### 6.其他错误码表
 
@@ -279,11 +332,3 @@ MJSDKUIService.getInstance().startDamage(MainActivity.this, new OnSdkUIDamageLis
 |9000021|	请选择公司|
 |9000022|	组织信息未填写，请确认|
 |9005|	服务器升级中!|
-
-
-
-# 功能截屏
-![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/1.jpg)
-![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/2.jpg)
-![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/3.jpg)
-![avatar](https://github.com/Eiffelyk/MJSeriousSDK/blob/master/demo/Screenshot/4.jpg)
