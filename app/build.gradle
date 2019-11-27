@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.mingjue.AssessDamage"
+        applicationId "com.dataenlighten.mjserioussdk"//修改成申请license文件时提供的值
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 2
@@ -42,8 +42,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.dataenlighten.serious:mj_serious_ui:0.6.4'
-//    implementation project(':mj_serious_ui')
+    implementation 'com.dataenlighten.serious:mj_serious_ui:0.6.5'
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
