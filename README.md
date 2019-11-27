@@ -7,9 +7,10 @@
 |时间|版本|更新内容|
 |----|-----|-----|
 |2019年11月11日|0.6.4|1.定损定损结果改为回调得方式，<br>2.添加定损流程中将用户已选配件回传给APP|
+|2019年11月27日|0.6.5|删除多余的代码|
 
 ## **使用步骤：**
-### 0.拷贝申请到的mj_license.lic文件到assets目录中
+### 0.拷贝申请到的mj_license.lic文件到assets目录中（demo调试还需将module build.gradle中的applicationId改为您申请license时提供的值）
 ### 1.添加依赖及权限：
 在工程build.gradle配置脚本中buildscript和allprojects段中添加【明觉科技SDK】 新maven仓库地址
 ```java
@@ -26,7 +27,7 @@ allprojects {
  在项目module build.gradle配置脚本中dependencies添加
 ```java
     //SDK依赖
-    implementation 'com.dataenlighten.serious:mj_serious_ui:0.6.4'
+    implementation 'com.dataenlighten.serious:mj_serious_ui:0.6.5'
     
 ```
 
